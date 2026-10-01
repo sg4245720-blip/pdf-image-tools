@@ -1,0 +1,304 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f8fafc;
+    color: #111827;
+    line-height: 1.6;
+}
+
+
+/* NAVBAR */
+
+.navbar {
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    transition: 0.2s ease;
+}
+
+.logo:hover {
+    transform: translateY(-1px);
+}
+
+.nav-links {
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    transition: 0.2s ease;
+}
+
+.nav-links a:hover {
+    transform: translateY(-1px);
+}
+
+
+/* HERO */
+
+.hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 20px 55px;
+    text-align: center;
+}
+
+.hero h1 {
+    margin: 0 auto 18px;
+    max-width: 800px;
+    font-size: clamp(38px, 6vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -2px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.hero p {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #64748b;
+}
+
+
+/* TOOLS */
+
+.tools-container {
+    width: min(1150px, 90%);
+    margin: 0 auto;
+    padding: 20px 0 70px;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+
+/* TOOL CARDS */
+
+.tool-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 28px;
+    min-height: 230px;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+
+    transition: 0.25s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.10);
+    border-color: #bfdbfe;
+}
+
+.tool-card h2 {
+    margin: 0 0 12px;
+    font-size: 21px;
+    line-height: 1.3;
+}
+
+.tool-card h2 a {
+    transition: 0.2s ease;
+}
+
+.tool-card h2 a:hover {
+    color: #2563eb !important;
+}
+
+.tool-card p {
+    margin: 0 0 24px;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+
+/* BUTTON */
+
+.tool-card > a:last-child {
+    margin-top: auto;
+    transition: 0.2s ease;
+}
+
+.tool-card > a:last-child:hover {
+    background: #1d4ed8 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
+}
+
+
+/* INFO SECTION */
+
+.info-section {
+    width: min(900px, 90%);
+    margin: 10px auto 80px;
+    padding: 45px 40px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.info-section h2 {
+    margin: 0 0 14px;
+    font-size: 30px;
+    color: #111827;
+}
+
+.info-section p {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+
+/* FOOTER */
+
+footer {
+    width: 100%;
+    background: #111827;
+    padding: 28px 20px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        padding-left: 5% !important;
+        padding-right: 5% !important;
+    }
+
+    .tools-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero {
+        padding-top: 65px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+    }
+}
+
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+    }
+
+    .logo {
+        font-size: 26px !important;
+    }
+
+    .nav-links {
+        justify-content: center;
+    }
+
+    .nav-links a {
+        padding: 9px 13px !important;
+        font-size: 13px !important;
+    }
+
+    .hero {
+        padding: 55px 18px 35px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+        letter-spacing: -1.2px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .tools-container {
+        width: 92%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding-bottom: 55px;
+    }
+
+    .tool-card {
+        padding: 24px;
+        min-height: 210px;
+    }
+
+    .info-section {
+        width: 92%;
+        padding: 35px 22px;
+        margin-bottom: 55px;
+    }
+
+    .info-section h2 {
+        font-size: 26px;
+    }
+
+    .info-section p {
+        font-size: 15px;
+    }
+}
+
+
+/* SMALL MOBILE */
+
+@media (max-width: 400px) {
+
+    .nav-links {
+        gap: 6px;
+    }
+
+    .nav-links a {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .tool-card h2 {
+        font-size: 19px;
+    }
+}

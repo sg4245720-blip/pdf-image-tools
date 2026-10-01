@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile - docuu.com</title>
+
+    <meta name="description"
+          content="Manage your docuu.com profile and account information.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar"
+     style="width:100%; min-height:72px; background:#ffffff;
+            border-bottom:1px solid #e5e7eb; display:flex;
+            align-items:center; justify-content:space-between;
+            padding:0 7%; position:sticky; top:0; z-index:1000;">
+
+    <a href="/"
+       class="logo"
+       style="font-size:28px; font-weight:800; color:#111827;
+              letter-spacing:-1px; text-decoration:none;">
+        docuu<span style="color:#2563eb;">.com</span>
+    </a>
+
+    <div class="nav-links"
+         style="display:flex; align-items:center; gap:10px;">
+
+        <a href="/"
+           style="text-decoration:none; color:#374151;
+                  padding:10px 14px; border-radius:8px;
+                  font-size:14px; font-weight:600;">
+            Home
+        </a>
+
+        <a href="/my-files"
+           style="text-decoration:none; color:#374151;
+                  padding:10px 14px; border-radius:8px;
+                  font-size:14px; font-weight:600;">
+            My Files
+        </a>
+
+        <!-- Secure Logout: POST + CSRF -->
+        <form action="{{ url_for('logout') }}"
+              method="POST"
+              style="display:inline; margin:0;">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <button type="submit"
+                    style="border:none;
+                           cursor:pointer;
+                           color:#dc2626;
+                           background:#fef2f2;
+                           padding:10px 14px;
+                           border-radius:8px;
+                           font-size:14px;
+                           font-weight:600;">
+                Logout
+            </button>
+
+        </form>
+
+    </div>
+
+</nav>
+
+
+<main class="profile-page">
+
+    <section class="profile-card">
+
+        <div class="profile-header">
+
+            <div class="profile-avatar">
+                {{ user["name"][0]|upper }}
+            </div>
+
+            <div>
+                <h1>{{ user["name"] }}</h1>
+
+                <p>
+                    {{ user["email"] }}
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="profile-divider"></div>
+
+
+        <div class="profile-section">
+
+            <h2>Account Information</h2>
+
+            <div class="profile-info-grid">
+
+                <div class="profile-info-box">
+
+                    <span class="profile-label">
+                        Full Name
+                    </span>
+
+                    <strong>
+                        {{ user["name"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-info-box">
+
+                    <span class="profile-label">
+                        Email Address
+                    </span>
+
+                    <strong>
+                        {{ user["email"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-info-box">
+
+                    <span class="profile-label">
+                        Account Created
+                    </span>
+
+                    <strong>
+                        {{ user["created_at"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-info-box">
+
+                    <span class="profile-label">
+                        Account Status
+                    </span>
+
+                    <strong class="status-active">
+                        ● Active
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-divider"></div>
+
+
+        <div class="profile-actions">
+
+            <a href="/my-files"
+               class="profile-primary-button">
+                View My Files
+            </a>
+
+            <a href="/"
+               class="profile-secondary-button">
+                Explore Tools
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <section class="profile-bottom">
+
+        <h2>Everything You Need in One Place</h2>
+
+        <p>
+            Manage your account and access all your processed
+            PDF and image files from docuu.com.
+        </p>
+
+        <div class="profile-features">
+
+            <div class="profile-feature">
+
+                <div class="feature-icon">
+                    PDF
+                </div>
+
+                <h3>PDF Tools</h3>
+
+                <p>
+                    Merge, split and convert PDF files easily.
+                </p>
+
+            </div>
+
+
+            <div class="profile-feature">
+
+                <div class="feature-icon">
+                    IMG
+                </div>
+
+                <h3>Image Tools</h3>
+
+                <p>
+                    Compress and resize your images quickly.
+                </p>
+
+            </div>
+
+
+            <div class="profile-feature">
+
+                <div class="feature-icon">
+                    FILE
+                </div>
+
+                <h3>My Files</h3>
+
+                <p>
+                    View and download your processed files.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 docuu.com. All rights reserved.
+    </p>
+
+</footer>
+
+
+<style>
+
+.profile-page {
+    min-height: calc(100vh - 72px);
+    background: #f8fafc;
+    padding: 65px 20px 80px;
+}
+
+
+.profile-card {
+    width: min(900px, 100%);
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 42px;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.07);
+}
+
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.profile-avatar {
+    width: 76px;
+    height: 76px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+.profile-header h1 {
+    margin: 0 0 5px;
+
+    color: #111827;
+
+    font-size: 30px;
+    line-height: 1.2;
+}
+
+
+.profile-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+
+.profile-divider {
+    width: 100%;
+    height: 1px;
+
+    background: #e5e7eb;
+
+    margin: 35px 0;
+}
+
+
+.profile-section h2 {
+    margin: 0 0 20px;
+
+    color: #111827;
+
+    font-size: 21px;
+}
+
+
+.profile-info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 16px;
+}
+
+
+.profile-info-box {
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+}
+
+
+.profile-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.profile-info-box strong {
+    display: block;
+
+    color: #111827;
+
+    font-size: 15px;
+
+    word-break: break-word;
+}
+
+
+.status-active {
+    color: #15803d !important;
+}
+
+
+.profile-actions {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.profile-primary-button,
+.profile-secondary-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 20px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+
+.profile-primary-button {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+.profile-primary-button:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+
+.profile-secondary-button {
+    background: #ffffff;
+
+    color: #374151;
+
+    border: 1px solid #d1d5db;
+}
+
+
+.profile-secondary-button:hover {
+    background: #f8fafc;
+
+    border-color: #2563eb;
+
+    color: #2563eb;
+}
+
+
+.profile-bottom {
+    width: min(900px, 100%);
+
+    margin: 45px auto 0;
+
+    text-align: center;
+}
+
+
+.profile-bottom h2 {
+    margin: 0 0 10px;
+
+    color: #111827;
+
+    font-size: 28px;
+}
+
+
+.profile-bottom > p {
+    max-width: 650px;
+
+    margin: 0 auto 30px;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+}
+
+
+.profile-features {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+
+.profile-feature {
+    padding: 25px 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+
+.feature-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 50px;
+    height: 42px;
+
+    padding: 0 10px;
+
+    margin-bottom: 14px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+
+.profile-feature h3 {
+    margin: 0 0 7px;
+
+    color: #111827;
+
+    font-size: 17px;
+}
+
+
+.profile-feature p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+@media (max-width: 700px) {
+
+    .profile-page {
+        padding: 40px 16px 60px;
+    }
+
+    .profile-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+    }
+
+    .profile-header {
+        align-items: flex-start;
+    }
+
+    .profile-avatar {
+        width: 62px;
+        height: 62px;
+        font-size: 24px;
+    }
+
+    .profile-header h1 {
+        font-size: 24px;
+    }
+
+    .profile-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-features {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+    }
+
+    .profile-primary-button,
+    .profile-secondary-button {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .navbar {
+        flex-direction: column;
+
+        gap: 15px;
+
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+    }
+
+    .profile-header {
+        flex-direction: column;
+
+        text-align: center;
+
+        align-items: center;
+    }
+
+    .profile-header p {
+        word-break: break-word;
+    }
+
+}
+
+</style>
+
+</body>
+</html>

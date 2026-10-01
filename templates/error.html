@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Error - PDF Image Tools</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+
+        <h1>Something went wrong</h1>
+
+        <p>{{ message }}</p>
+
+    </header>
+
+    <div style="text-align: center; margin-top: 20px;">
+
+        <a href="/"
+           style="
+           display: inline-block;
+           background: #2563eb;
+           color: white;
+           padding: 12px 22px;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: bold;
+           ">
+
+            ← Back to Tools
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>

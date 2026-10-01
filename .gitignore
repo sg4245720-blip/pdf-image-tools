@@ -1,0 +1,11 @@
+.env
+venv/
+__pycache__/
+*.pyc
+docuu.db
+uploads/
+compressed/
+resized/
+merged/
+split/
+pdf_to_jpg/

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Split PDF Online - docuu.com</title>
+
+    <meta name="description"
+          content="Split PDF files online for free with docuu.com. Extract the pages you need from a PDF quickly and easily.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .tool-page {
+            width: min(850px, 92%);
+            margin: 0 auto;
+            padding: 10px 0 80px;
+        }
+
+        .converter-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+        }
+
+        .converter-card h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            color: #111827;
+            text-align: center;
+        }
+
+        .converter-card > p {
+            margin: 0 auto 30px;
+            max-width: 600px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 190px;
+            padding: 30px;
+            border: 2px dashed #bfdbfe;
+            border-radius: 16px;
+            background: #f8fbff;
+            text-align: center;
+            transition: 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .upload-box h3 {
+            margin: 0 0 7px;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .upload-box p {
+            margin: 0 0 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .upload-box input[type="file"] {
+            width: 100%;
+            max-width: 450px;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .page-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .range-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .range-group label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .range-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .range-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .split-button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .split-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .feature-card {
+            padding: 22px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .feature-card .icon {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            color: #111827;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .tip-box {
+            width: min(850px, 92%);
+            margin: 0 auto 70px;
+            padding: 24px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .tip-box h3 {
+            margin: 0 0 7px;
+            color: #1e40af;
+            font-size: 18px;
+        }
+
+        .tip-box p {
+            margin: 0;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        @media (max-width: 650px) {
+
+            .converter-card {
+                padding: 25px 18px;
+            }
+
+            .converter-card h2 {
+                font-size: 24px;
+            }
+
+            .page-range {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar"
+     style="width:100%; min-height:72px; background:#ffffff; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between; padding:0 7%; position:sticky; top:0; z-index:1000;">
+
+    <a href="/"
+       class="logo"
+       style="font-size:28px; font-weight:800; color:#111827; letter-spacing:-1px; text-decoration:none;">
+        docuu<span style="color:#2563eb;">.com</span>
+    </a>
+
+    <div class="nav-links"
+         style="display:flex; align-items:center; gap:10px;">
+
+        {% if user %}
+
+            <a href="/profile"
+               style="display:inline-block; padding:10px 17px; border-radius:9px; font-size:14px; font-weight:700; color:#2563eb; background:#ffffff; border:2px solid #2563eb; text-decoration:none;">
+                Profile
+            </a>
+
+            <a href="/my-files"
+               style="display:inline-block; padding:10px 17px; border-radius:9px; font-size:14px; font-weight:700; color:#2563eb; background:#ffffff; border:2px solid #2563eb; text-decoration:none;">
+                My Files
+            </a>
+
+            <a href="/logout"
+               style="display:inline-block; padding:10px 17px; border-radius:9px; font-size:14px; font-weight:700; color:#dc2626; background:#ffffff; border:2px solid #dc2626; text-decoration:none;">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="/login"
+               style="display:inline-block; padding:10px 17px; border-radius:9px; font-size:14px; font-weight:700; color:#2563eb; background:#ffffff; border:2px solid #2563eb; text-decoration:none;">
+                Login
+            </a>
+
+            <a href="/signup"
+               style="display:inline-block; padding:10px 17px; border-radius:9px; font-size:14px; font-weight:700; color:#ffffff; background:#2563eb; border:2px solid #2563eb; text-decoration:none;">
+                Sign Up
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+<section class="hero">
+
+    <h1>Split PDF Files Online</h1>
+
+    <p>
+        Extract the pages you need from a PDF quickly and easily.
+    </p>
+
+</section>
+
+<main class="tool-page">
+
+    <div class="converter-card">
+
+        <h2>Split Your PDF</h2>
+
+        <p>
+            Upload a PDF and select the page range you want to extract.
+        </p>
+
+        <form action="/split-pdf"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <!-- CSRF SECURITY TOKEN -->
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="upload-box">
+
+                <div class="upload-icon">📄</div>
+
+                <h3>Select a PDF File</h3>
+
+                <p>
+                    Choose the PDF document you want to split
+                </p>
+
+                <input
+                    type="file"
+                    name="file"
+                    accept="application/pdf"
+                    required
+                >
+
+            </div>
+
+            <div class="page-range">
+
+                <div class="range-group">
+
+                    <label for="start_page">
+                        Start Page
+                    </label>
+
+                    <input
+                        type="number"
+                        id="start_page"
+                        name="start_page"
+                        placeholder="Example: 1"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+                <div class="range-group">
+
+                    <label for="end_page">
+                        End Page
+                    </label>
+
+                    <input
+                        type="number"
+                        id="end_page"
+                        name="end_page"
+                        placeholder="Example: 5"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="split-button">
+                Split PDF
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+
+            <div class="icon">📑</div>
+
+            <h3>Select Pages</h3>
+
+            <p>
+                Choose exactly which page range you want from your PDF.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="icon">⚡</div>
+
+            <h3>Quick Processing</h3>
+
+            <p>
+                Extract the selected pages quickly and easily.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="icon">⬇️</div>
+
+            <h3>Easy Download</h3>
+
+            <p>
+                Download your new PDF immediately after processing.
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+<section class="info-section">
+
+    <h2>How to Split a PDF?</h2>
+
+    <p>
+        Upload your PDF file, enter the starting and ending page numbers,
+        and click Split PDF. docuu.com will create a new PDF containing
+        only the selected pages.
+    </p>
+
+</section>
+
+<div class="tip-box">
+
+    <h3>💡 Example</h3>
+
+    <p>
+        If your PDF has 10 pages and you enter Start Page 3 and
+        End Page 7, the resulting PDF will contain pages 3 through 7.
+    </p>
+
+</div>
+
+<footer>
+
+    <p>© 2026 docuu.com. All rights reserved.</p>
+
+</footer>
+
+</body>
+</html>

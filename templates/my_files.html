@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Files - docuu.com</title>
+
+    <meta name="description"
+          content="View, download and manage your processed files on docuu.com.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar"
+     style="width:100%; min-height:72px; background:#ffffff;
+            border-bottom:1px solid #e5e7eb; display:flex;
+            align-items:center; justify-content:space-between;
+            padding:0 7%; position:sticky; top:0; z-index:1000;">
+
+    <a href="/"
+       class="logo"
+       style="font-size:28px; font-weight:800; color:#111827;
+              letter-spacing:-1px; text-decoration:none;">
+        docuu<span style="color:#2563eb;">.com</span>
+    </a>
+
+    <div class="nav-links"
+         style="display:flex; align-items:center; gap:10px;">
+
+        <a href="/"
+           class="myfiles-nav-link">
+            Home
+        </a>
+
+        <a href="/profile"
+           class="myfiles-nav-link">
+            Profile
+        </a>
+
+        <a href="/logout"
+           class="myfiles-logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="my-files-page">
+
+    <section class="my-files-header">
+
+        <div>
+
+            <span class="page-badge">
+                MY FILES
+            </span>
+
+            <h1>
+                Your Files
+            </h1>
+
+            <p>
+                View and manage the files you have processed
+                using docuu.com tools.
+            </p>
+
+        </div>
+
+        <a href="/"
+           class="browse-tools-button">
+            Browse Tools
+        </a>
+
+    </section>
+
+
+    <section class="file-stats">
+
+        <div class="file-stat-card">
+
+            <div class="stat-icon">
+                FILE
+            </div>
+
+            <div>
+                <span>
+                    Total Files
+                </span>
+
+                <strong>
+                    {{ files|length }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="file-stat-card">
+
+            <div class="stat-icon">
+                PDF
+            </div>
+
+            <div>
+                <span>
+                    PDF Tools
+                </span>
+
+                <strong>
+                    {{ files|selectattr("tool_name", "in", ["JPG to PDF", "Merge PDF", "Split PDF", "PDF to JPG"])|list|length }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="file-stat-card">
+
+            <div class="stat-icon">
+                IMG
+            </div>
+
+            <div>
+                <span>
+                    Image Tools
+                </span>
+
+                <strong>
+                    {{ files|selectattr("tool_name", "in", ["Compress Image", "Resize Image"])|list|length }}
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="files-section">
+
+        <div class="files-section-header">
+
+            <div>
+
+                <h2>
+                    Processed Files
+                </h2>
+
+                <p>
+                    Your recently processed files appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if files %}
+
+        <div class="files-list">
+
+            {% for file in files %}
+
+            <div class="file-card">
+
+                <div class="file-main">
+
+                    <div class="file-icon">
+                        {% if "PDF" in file["tool_name"] %}
+                            PDF
+                        {% elif "Image" in file["tool_name"] %}
+                            IMG
+                        {% else %}
+                            FILE
+                        {% endif %}
+                    </div>
+
+
+                    <div class="file-details">
+
+                        <h3>
+                            {{ file["filename"] }}
+                        </h3>
+
+                        <div class="file-meta">
+
+                            <span>
+                                {{ file["tool_name"] }}
+                            </span>
+
+                            <span class="meta-dot">
+                                •
+                            </span>
+
+                            <span>
+                                {{ file["created_at"] }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="file-actions">
+
+                    <a href="/download/{{ file['id'] }}"
+                       class="download-button">
+                        Download
+                    </a>
+
+
+                    <!-- DELETE IS NOW POST + CSRF PROTECTED -->
+                    <form action="/delete-file/{{ file['id'] }}"
+                          method="POST"
+                          style="display:inline;"
+                          onsubmit="return confirm('Are you sure you want to delete this file?');">
+
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <button type="submit"
+                                class="delete-button"
+                                style="cursor:pointer;">
+                            Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-files">
+
+            <div class="empty-icon">
+                FILE
+            </div>
+
+            <h2>
+                No files yet
+            </h2>
+
+            <p>
+                You haven't processed any files yet.
+                Choose one of our tools to get started.
+            </p>
+
+            <a href="/"
+               class="empty-button">
+                Explore PDF & Image Tools
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 docuu.com. All rights reserved.
+    </p>
+
+</footer>
+
+
+<style>
+
+.my-files-page {
+    min-height: calc(100vh - 72px);
+    background: #f8fafc;
+    padding: 55px 20px 80px;
+}
+
+
+.my-files-header {
+    width: min(1100px, 100%);
+    margin: 0 auto 30px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+
+.page-badge {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    padding: 5px 10px;
+
+    background: #eff6ff;
+
+    border: 1px solid #dbeafe;
+
+    border-radius: 999px;
+
+    color: #2563eb;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+}
+
+
+.my-files-header h1 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 38px;
+
+    line-height: 1.15;
+
+    letter-spacing: -1px;
+}
+
+
+.my-files-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+
+.browse-tools-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 18px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+
+.browse-tools-button:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.18);
+}
+
+
+.file-stats {
+    width: min(1100px, 100%);
+    margin: 0 auto 28px;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+
+.file-stat-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 21px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+}
+
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    border-radius: 10px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+.file-stat-card span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.file-stat-card strong {
+    display: block;
+
+    color: #111827;
+
+    font-size: 24px;
+
+    line-height: 1.2;
+}
+
+
+.files-section {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+
+    overflow: hidden;
+}
+
+
+.files-section-header {
+    padding: 28px 30px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+.files-section-header h2 {
+    margin: 0 0 4px;
+
+    color: #111827;
+
+    font-size: 21px;
+}
+
+
+.files-section-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+.files-list {
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.file-card {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 30px;
+
+    border-bottom: 1px solid #eef2f7;
+
+    transition: 0.2s ease;
+}
+
+
+.file-card:last-child {
+    border-bottom: none;
+}
+
+
+.file-card:hover {
+    background: #f8fafc;
+}
+
+
+.file-main {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.file-icon {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f1f5f9;
+
+    border: 1px solid #e2e8f0;
+
+    color: #475569;
+
+    border-radius: 11px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+.file-details {
+    min-width: 0;
+}
+
+
+.file-details h3 {
+    margin: 0 0 5px;
+
+    color: #111827;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.file-meta {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.meta-dot {
+    color: #cbd5e1;
+}
+
+
+.file-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+
+.download-button,
+.delete-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+
+.download-button {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+.download-button:hover {
+    background: #1d4ed8;
+}
+
+
+.delete-button {
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    border: 1px solid #fecaca;
+}
+
+
+.delete-button:hover {
+    background: #fee2e2;
+}
+
+
+.empty-files {
+    padding: 75px 25px;
+
+    text-align: center;
+}
+
+
+.empty-icon {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    border-radius: 15px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+.empty-files h2 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 24px;
+}
+
+
+.empty-files p {
+    max-width: 500px;
+
+    margin: 0 auto 25px;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+.empty-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 18px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+.empty-button:hover {
+    background: #1d4ed8;
+}
+
+
+.myfiles-nav-link {
+    text-decoration: none;
+
+    color: #374151;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+
+.myfiles-nav-link:hover {
+    background: #f1f5f9;
+
+    color: #2563eb;
+}
+
+
+.myfiles-logout {
+    text-decoration: none;
+
+    color: #dc2626;
+
+    background: #fef2f2;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+
+.myfiles-logout:hover {
+    background: #fee2e2;
+}
+
+
+@media (max-width: 800px) {
+
+    .my-files-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .browse-tools-button {
+        width: 100%;
+    }
+
+    .file-stats {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+        flex-direction: column;
+
+        gap: 15px;
+
+        padding-top: 18px !important;
+
+        padding-bottom: 18px !important;
+    }
+
+    .my-files-page {
+        padding: 40px 15px 60px;
+    }
+
+    .my-files-header h1 {
+        font-size: 32px;
+    }
+
+    .files-section-header {
+        padding: 23px 20px;
+    }
+
+    .file-card {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        padding: 20px;
+    }
+
+    .file-main {
+        width: 100%;
+    }
+
+    .file-actions {
+        width: 100%;
+    }
+
+    .download-button,
+    .delete-button {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .file-main {
+        align-items: flex-start;
+    }
+
+    .file-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .file-details h3 {
+        max-width: 210px;
+    }
+
+    .file-meta {
+        flex-wrap: wrap;
+    }
+
+}
+
+</style>
+
+</body>
+</html>
