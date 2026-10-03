@@ -13,6 +13,7 @@ import pymupdf
 import os
 import zipfile
 import uuid
+import traceback
 
 from database import get_connection
 
@@ -61,7 +62,6 @@ app.secret_key = os.getenv("SECRET_KEY")
 # =========================
 
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 
@@ -96,15 +96,10 @@ app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 # =========================
 
 UPLOAD_FOLDER = "uploads"
-
 COMPRESSED_FOLDER = "compressed"
-
 RESIZED_FOLDER = "resized"
-
 MERGED_FOLDER = "merged"
-
 SPLIT_FOLDER = "split"
-
 PDF_TO_JPG_FOLDER = "pdf_to_jpg"
 
 
@@ -116,7 +111,6 @@ for folder in [
     SPLIT_FOLDER,
     PDF_TO_JPG_FOLDER
 ]:
-
     os.makedirs(folder, exist_ok=True)
 
 
@@ -131,7 +125,6 @@ ALLOWED_IMAGE_EXTENSIONS = {
     "webp"
 }
 
-
 ALLOWED_PDF_EXTENSIONS = {
     "pdf"
 }
@@ -140,7 +133,6 @@ ALLOWED_PDF_EXTENSIONS = {
 def get_file_extension(filename):
 
     if not filename or "." not in filename:
-
         return ""
 
     return filename.rsplit(".", 1)[1].lower()
@@ -165,7 +157,6 @@ def safe_filename(filename):
     filename = secure_filename(filename)
 
     if not filename:
-
         return None
 
     return filename
@@ -188,11 +179,8 @@ def validate_image(file):
     except Exception:
 
         try:
-
             file.stream.seek(0)
-
         except Exception:
-
             pass
 
         return False
@@ -218,7 +206,6 @@ def validate_pdf(file):
         reader = PdfReader(temp_path)
 
         if len(reader.pages) < 1:
-
             return False
 
         return True
@@ -230,21 +217,15 @@ def validate_pdf(file):
     finally:
 
         try:
-
             file.stream.seek(0)
-
         except Exception:
-
             pass
 
         if temp_path and os.path.exists(temp_path):
 
             try:
-
                 os.remove(temp_path)
-
             except OSError:
-
                 pass
 
 
@@ -257,7 +238,6 @@ def get_current_user():
     user_id = session.get("user_id")
 
     if not user_id:
-
         return None
 
     connection = get_connection()
@@ -289,7 +269,6 @@ def save_file_record(
     user = get_current_user()
 
     if not user:
-
         return
 
     connection = get_connection()
@@ -398,6 +377,7 @@ def signup():
             INSERT INTO users
             (name, email, password)
             VALUES (?, ?, ?)
+            RETURNING id
             """,
             (
                 name,
@@ -406,9 +386,11 @@ def signup():
             )
         )
 
+        user_row = cursor.fetchone()
+
         connection.commit()
 
-        user_id = cursor.lastrowid
+        user_id = user_row["id"]
 
         connection.close()
 
@@ -449,6 +431,14 @@ def login():
             ""
         )
 
+        # LOGIN DEBUG
+        print("")
+        print("================================")
+        print("LOGIN DEBUG")
+        print("================================")
+        print("LOGIN EMAIL:", repr(email))
+        print("PASSWORD ENTERED:", repr(password))
+
         connection = get_connection()
 
         user = connection.execute(
@@ -460,19 +450,56 @@ def login():
             (email,)
         ).fetchone()
 
+        print(
+            "USER FOUND:",
+            user is not None
+        )
+
+        if user:
+
+            try:
+
+                password_match = check_password_hash(
+                    user["password"],
+                    password
+                )
+
+            except Exception as error:
+
+                print(
+                    "PASSWORD CHECK ERROR:",
+                    repr(error)
+                )
+
+                password_match = False
+
+        else:
+
+            password_match = False
+
+        print(
+            "PASSWORD MATCH:",
+            password_match
+        )
+
         connection.close()
 
         if not user:
+
+            print(
+                "LOGIN RESULT: USER NOT FOUND"
+            )
 
             return render_template(
                 "login.html",
                 error="Invalid email or password."
             )
 
-        if not check_password_hash(
-            user["password"],
-            password
-        ):
+        if not password_match:
+
+            print(
+                "LOGIN RESULT: WRONG PASSWORD"
+            )
 
             return render_template(
                 "login.html",
@@ -480,6 +507,18 @@ def login():
             )
 
         session["user_id"] = user["id"]
+
+        print(
+            "LOGIN RESULT: SUCCESS"
+        )
+
+        print(
+            "USER ID:",
+            user["id"]
+        )
+
+        print("================================")
+        print("")
 
         return redirect(
             url_for("home")
@@ -659,11 +698,8 @@ def delete_file(file_id):
     if os.path.exists(file_path):
 
         try:
-
             os.remove(file_path)
-
         except OSError:
-
             pass
 
     connection.execute(
@@ -834,11 +870,8 @@ def jpg_to_pdf():
         for image in images:
 
             try:
-
                 image.close()
-
             except Exception:
-
                 pass
 
 
@@ -1036,7 +1069,6 @@ def resize_image():
     try:
 
         width = int(width)
-
         height = int(height)
 
     except ValueError:
@@ -1106,7 +1138,6 @@ def resize_image():
         )
 
         image.close()
-
         resized_image.close()
 
         save_file_record(
@@ -1281,13 +1312,8 @@ def merge_pdf():
             ):
 
                 try:
-
-                    os.remove(
-                        temp_path
-                    )
-
+                    os.remove(temp_path)
                 except OSError:
-
                     pass
 
 
@@ -1366,13 +1392,8 @@ def split_pdf():
 
     try:
 
-        start_page = int(
-            start_page
-        )
-
-        end_page = int(
-            end_page
-        )
+        start_page = int(start_page)
+        end_page = int(end_page)
 
     except ValueError:
 
@@ -1481,13 +1502,8 @@ def split_pdf():
         ):
 
             try:
-
-                os.remove(
-                    temp_path
-                )
-
+                os.remove(temp_path)
             except OSError:
-
                 pass
 
 
@@ -1575,7 +1591,6 @@ def pdf_to_jpg():
             temp_path
         )
 
-        # PyMuPDF
         document = pymupdf.open(
             temp_path
         )
@@ -1634,9 +1649,7 @@ def pdf_to_jpg():
 
                 zip_file.write(
                     image_path,
-                    os.path.basename(
-                        image_path
-                    )
+                    os.path.basename(image_path)
                 )
 
         save_file_record(
@@ -1663,41 +1676,24 @@ def pdf_to_jpg():
         if document is not None:
 
             try:
-
                 document.close()
-
             except Exception:
-
                 pass
 
-        if os.path.exists(
-            temp_path
-        ):
+        if os.path.exists(temp_path):
 
             try:
-
-                os.remove(
-                    temp_path
-                )
-
+                os.remove(temp_path)
             except OSError:
-
                 pass
 
         for image_path in image_files:
 
-            if os.path.exists(
-                image_path
-            ):
+            if os.path.exists(image_path):
 
                 try:
-
-                    os.remove(
-                        image_path
-                    )
-
+                    os.remove(image_path)
                 except OSError:
-
                     pass
 
 
@@ -1727,6 +1723,7 @@ def too_large(error):
     ), 413
 
 
+```python
 # =========================
 # GENERAL ERROR
 # =========================
@@ -1734,12 +1731,19 @@ def too_large(error):
 @app.errorhandler(Exception)
 def handle_error(error):
 
-    if isinstance(
-        error,
-        HTTPException
-    ):
-
+    if isinstance(error, HTTPException):
         return error
+
+    print("")
+    print("========================================")
+    print("APPLICATION ERROR")
+    print("========================================")
+    print("ERROR TYPE:", type(error).__name__)
+    print("ERROR:", repr(error))
+    print("TRACEBACK:")
+    traceback.print_exc()
+    print("========================================")
+    print("")
 
     return render_template(
         "error.html",
@@ -1748,6 +1752,8 @@ def handle_error(error):
             "Please try again."
         )
     ), 500
+```
+
 
 
 # =========================
