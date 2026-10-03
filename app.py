@@ -1723,7 +1723,6 @@ def too_large(error):
     ), 413
 
 
-```python
 # =========================
 # GENERAL ERROR
 # =========================
@@ -1752,7 +1751,6 @@ def handle_error(error):
             "Please try again."
         )
     ), 500
-```
 
 
 
